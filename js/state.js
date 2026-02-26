@@ -80,9 +80,8 @@ export const State = {
         this.tasks.push(newTask);
         this.tasks.sort((a, b) => a.time.localeCompare(b.time));
         
-        import('./storage.js').then(module => {
-            module.Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
     },
 
     addRoutine(time24, title, daysArray, subtasksArray = []) {
@@ -97,9 +96,8 @@ export const State = {
         this.routines.push(newRoutine);
         this.routines.sort((a, b) => a.time.localeCompare(b.time));
         
-        import('./storage.js').then(module => {
-            module.Storage.set('master_routines', this.routines);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set('master_routines', this.routines);
     },
 
     // --- NEW: INBOX METHODS ---
@@ -113,9 +111,9 @@ export const State = {
             type: 'inbox'
         };
         this.inbox.push(newItem);
-        import('./storage.js').then(module => {
-            module.Storage.set('unscheduled_inbox', this.inbox);
-        });
+        
+        // SYNCHRONOUS SAVE
+        Storage.set('unscheduled_inbox', this.inbox);
         return true; // Reports success
     },
 
@@ -128,10 +126,8 @@ export const State = {
             this.trackDeletedId(inboxId);
         }
 
-        // 3. Save the newly cleaned inbox to your local database
-        import('./storage.js').then(module => {
-            module.Storage.set('unscheduled_inbox', this.inbox);
-        });
+        // 3. Save the newly cleaned inbox to your local database synchronously
+        Storage.set('unscheduled_inbox', this.inbox);
     },
     // --------------------------
 
@@ -142,9 +138,8 @@ export const State = {
             task.title = title;
             task.subtasks = subtasks;
             
-            import('./storage.js').then(module => {
-                module.Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
-            });
+            // SYNCHRONOUS SAVE
+            Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
         }
     },
 
@@ -156,9 +151,8 @@ export const State = {
             routine.days = days;
             routine.subtasks = subtasksArray; // NEW: Updates subtasks!
             
-            import('./storage.js').then(module => {
-                module.Storage.set('master_routines', this.routines);
-            });
+            // SYNCHRONOUS SAVE
+            Storage.set('master_routines', this.routines);
         }
     },
 
@@ -186,9 +180,8 @@ export const State = {
             arr.push(subtaskIndex); 
         }
         
-        import('./storage.js').then(module => {
-            module.Storage.set('subtask_states', this.subtaskStates);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set('subtask_states', this.subtaskStates);
         
         return arr.length; 
     },
@@ -199,21 +192,19 @@ export const State = {
         
         // 2. Feed the ID to the Invisible Trash Bin for the Sync Engine
         if (typeof this.trackDeletedId === 'function') {
-            this.trackDeletedId(routineId); // <-- This is what was crashing it! (It was 'taskId')
+            this.trackDeletedId(routineId); 
         }
 
-        // 3. Save the updated routines list to local storage
-        import('./storage.js').then(module => {
-            module.Storage.set('master_routines', this.routines);
-        });
+        // 3. Save the updated routines list to local storage synchronously
+        Storage.set('master_routines', this.routines);
     },
 
     deleteTask(taskId) {
         this.tasks = this.tasks.filter(t => t.id !== taskId);
         this.trackDeletedId(taskId); // <-- NEW!
-        import('./storage.js').then(module => {
-            module.Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
-        });
+        
+        // SYNCHRONOUS SAVE
+        Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
     },
     
     toggleTask(taskId) {
@@ -239,9 +230,8 @@ export const State = {
             task.completed = false;
         }
 
-        import('./storage.js').then(module => {
-            module.Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
     },
 
     skipRoutineForDate(routineId, dateKey) {
@@ -250,9 +240,9 @@ export const State = {
         }
         if (!this.routineOverrides[dateKey].includes(routineId)) {
             this.routineOverrides[dateKey].push(routineId);
-            import('./storage.js').then(module => {
-                module.Storage.set('routine_overrides', this.routineOverrides);
-            });
+            
+            // SYNCHRONOUS SAVE
+            Storage.set('routine_overrides', this.routineOverrides);
         }
     },
 
@@ -270,9 +260,8 @@ export const State = {
             arr.push(routineId); // Collapse it for today
         }
         
-        import('./storage.js').then(module => {
-            module.Storage.set('routine_completions', this.routineCompletions);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set('routine_completions', this.routineCompletions);
     },
 
     // ==========================================
@@ -281,199 +270,187 @@ export const State = {
     
     updateInboxLimit(newLimit) {
         this.inboxLimit = newLimit;
-        import('./storage.js').then(module => {
-            module.Storage.set('settings_inboxLimit', this.inboxLimit);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set('settings_inboxLimit', this.inboxLimit);
     },
 
     toggleSound() {
         this.soundEnabled = !this.soundEnabled;
-        import('./storage.js').then(module => {
-            module.Storage.set('settings_soundEnabled', this.soundEnabled);
-        });
+        // SYNCHRONOUS SAVE
+        Storage.set('settings_soundEnabled', this.soundEnabled);
         return this.soundEnabled;
     },
 
     trackDeletedId(id) {
         if (!this.deletedIds.includes(id)) {
             this.deletedIds.push(id);
-            import('./storage.js').then(module => {
-                module.Storage.set('deleted_ids', this.deletedIds);
-            });
+            // SYNCHRONOUS SAVE
+            Storage.set('deleted_ids', this.deletedIds);
         }
     },
 
     factoryReset() {
-        // Find our specific prefix (slate_app_) and wipe ONLY our data
-        import('./storage.js').then(module => {
-            const prefix = module.Storage.PREFIX;
-            for (let i = localStorage.length - 1; i >= 0; i--) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith(prefix)) {
-                    localStorage.removeItem(key);
-                }
+        // Find our specific prefix (slate_app_) and wipe ONLY our data synchronously
+        const prefix = Storage.PREFIX;
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(prefix)) {
+                localStorage.removeItem(key);
             }
-            // Hard refresh the page to start fresh
-            window.location.reload();
-        });
+        }
+        // Hard refresh the page to start fresh
+        window.location.reload();
     },
 
     exportData() {
         const backup = {};
-        import('./storage.js').then(module => {
-            const prefix = module.Storage.PREFIX;
-            // 1. Gather every single piece of Slate data from the browser
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith(prefix)) {
-                    const originalKey = key.substring(prefix.length);
-                    backup[originalKey] = module.Storage.get(originalKey);
-                }
+        const prefix = Storage.PREFIX;
+        
+        // 1. Gather every single piece of Slate data from the browser synchronously
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(prefix)) {
+                const originalKey = key.substring(prefix.length);
+                backup[originalKey] = Storage.get(originalKey);
             }
-            
-            // --- NEW: Generate Dynamic Filename with Date & 24h Time ---
-            const now = new Date();
-            const yyyy = now.getFullYear();
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const dd = String(now.getDate()).padStart(2, '0');
-            const hr = String(now.getHours()).padStart(2, '0'); // 24h format
-            const min = String(now.getMinutes()).padStart(2, '0');
-            
-            const dynamicFileName = `slate_backup_${yyyy}-${mm}-${dd}_${hr}${min}.json`;
-            // -----------------------------------------------------------
+        }
+        
+        // --- NEW: Generate Dynamic Filename with Date & 24h Time ---
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hr = String(now.getHours()).padStart(2, '0'); // 24h format
+        const min = String(now.getMinutes()).padStart(2, '0');
+        
+        const dynamicFileName = `slate_backup_${yyyy}-${mm}-${dd}_${hr}${min}.json`;
+        // -----------------------------------------------------------
 
-            // 2. Package it into a downloadable JSON file
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            
-            // 3. Attach the beautiful new dynamic filename
-            downloadAnchorNode.setAttribute("download", dynamicFileName); 
-            
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        });
+        // 2. Package it into a downloadable JSON file
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        
+        // 3. Attach the beautiful new dynamic filename
+        downloadAnchorNode.setAttribute("download", dynamicFileName); 
+        
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     },
 
     importData(importedData) {
-        import('./storage.js').then(module => {
-            // 1. MERGE THE TRASH BINS FIRST
-            const localDeleted = this.deletedIds;
-            const importedDeleted = importedData['deleted_ids'] || [];
-            // Combine both lists and remove duplicates using a Set
-            const combinedDeleted = [...new Set([...localDeleted, ...importedDeleted])]; 
-            
-            this.deletedIds = combinedDeleted;
-            module.Storage.set('deleted_ids', this.deletedIds);
+        // 1. MERGE THE TRASH BINS FIRST
+        const localDeleted = this.deletedIds;
+        const importedDeleted = importedData['deleted_ids'] || [];
+        // Combine both lists and remove duplicates using a Set
+        const combinedDeleted = [...new Set([...localDeleted, ...importedDeleted])]; 
+        
+        this.deletedIds = combinedDeleted;
+        Storage.set('deleted_ids', this.deletedIds);
 
-            const isKilled = (id) => combinedDeleted.includes(id);
+        const isKilled = (id) => combinedDeleted.includes(id);
 
-            // 2. ITERATE THROUGH IMPORTED DATA
-            for (const key in importedData) {
-                if (key === 'deleted_ids') continue; // Already handled
+        // 2. ITERATE THROUGH IMPORTED DATA SYNCHRONOUSLY
+        for (const key in importedData) {
+            if (key === 'deleted_ids') continue; // Already handled
 
-                // A. Handle Simple Settings (Imported wins)
-                if (key === 'settings_inboxLimit') {
-                    module.Storage.set(key, importedData[key]);
-                    continue;
-                }
-                
-                // B. Handle Dictionaries (Subtasks & Routine Overrides)
-                if (key === 'routine_overrides' || key === 'subtask_states') {
-                    const localObj = module.Storage.get(key, {});
-                    const importedObj = importedData[key];
-                    // Merges them. If there's a conflict, imported wins.
-                    const mergedObj = { ...localObj, ...importedObj };
-                    module.Storage.set(key, mergedObj);
-                    continue;
-                }
-
-                // C. Handle Arrays (Tasks, Routines, Inbox)
-                const localArray = module.Storage.get(key, []);
-                const importedArray = importedData[key];
-                
-                if (Array.isArray(importedArray)) {
-                    let mergedArray = [...localArray];
-                    
-                    importedArray.forEach(importedItem => {
-                        const localIndex = mergedArray.findIndex(item => item.id === importedItem.id);
-                        if (localIndex > -1) {
-                            // Conflict! Imported file overwrites the local item.
-                            mergedArray[localIndex] = importedItem;
-                        } else {
-                            // It's a brand new item from the other device. Add it.
-                            mergedArray.push(importedItem);
-                        }
-                    });
-
-                    // D. THE ZOMBIE KILLER: Filter out anything present in the combined trash bin
-                    mergedArray = mergedArray.filter(item => !isKilled(item.id));
-                    
-                    module.Storage.set(key, mergedArray);
-                }
-            }
-
-            // 3. SHOW TOAST AND REBOOT
-            const toast = document.getElementById('toastNotification');
-            const toastMsg = document.getElementById('toastMessage');
-            if (toast && toastMsg) {
-                toastMsg.textContent = "Data merged successfully! 🔄";
-                toast.classList.add('show');
+            // A. Handle Simple Settings (Imported wins)
+            if (key === 'settings_inboxLimit') {
+                Storage.set(key, importedData[key]);
+                continue;
             }
             
-            // Wait 1.5 seconds so you can read the toast, then reboot to lock in the clean data!
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        });
+            // B. Handle Dictionaries (Subtasks & Routine Overrides)
+            if (key === 'routine_overrides' || key === 'subtask_states') {
+                const localObj = Storage.get(key, {});
+                const importedObj = importedData[key];
+                // Merges them. If there's a conflict, imported wins.
+                const mergedObj = { ...localObj, ...importedObj };
+                Storage.set(key, mergedObj);
+                continue;
+            }
+
+            // C. Handle Arrays (Tasks, Routines, Inbox)
+            const localArray = Storage.get(key, []);
+            const importedArray = importedData[key];
+            
+            if (Array.isArray(importedArray)) {
+                let mergedArray = [...localArray];
+                
+                importedArray.forEach(importedItem => {
+                    const localIndex = mergedArray.findIndex(item => item.id === importedItem.id);
+                    if (localIndex > -1) {
+                        // Conflict! Imported file overwrites the local item.
+                        mergedArray[localIndex] = importedItem;
+                    } else {
+                        // It's a brand new item from the other device. Add it.
+                        mergedArray.push(importedItem);
+                    }
+                });
+
+                // D. THE ZOMBIE KILLER: Filter out anything present in the combined trash bin
+                mergedArray = mergedArray.filter(item => !isKilled(item.id));
+                
+                Storage.set(key, mergedArray);
+            }
+        }
+
+        // 3. SHOW TOAST AND REBOOT
+        const toast = document.getElementById('toastNotification');
+        const toastMsg = document.getElementById('toastMessage');
+        if (toast && toastMsg) {
+            toastMsg.textContent = "Data merged successfully! 🔄";
+            toast.classList.add('show');
+        }
+        
+        // Wait 1.5 seconds so you can read the toast, then reboot to lock in the clean data!
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
     },
 
     // ==========================================
     // PHASE 6: THE SILENT GARBAGE COLLECTOR
     // ==========================================
     runGarbageCollector() {
-        import('./storage.js').then(module => {
-            const prefix = module.Storage.PREFIX;
-            const now = Date.now();
-            const retentionDays = 120; // Easy to change later!
-            const cutoffMs = retentionDays * 24 * 60 * 60 * 1000;
-            const cutoffTime = now - cutoffMs;
+        const prefix = Storage.PREFIX;
+        const now = Date.now();
+        const retentionDays = 120; // Easy to change later!
+        const cutoffMs = retentionDays * 24 * 60 * 60 * 1000;
+        const cutoffTime = now - cutoffMs;
 
-            // 1. Sweep old Daily Task Files
-            for (let i = localStorage.length - 1; i >= 0; i--) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith(prefix + 'tasks_')) {
-                    const dateString = key.replace(prefix + 'tasks_', ''); // isolates "YYYY-MM-DD"
-                    const fileDate = new Date(dateString).getTime();
-                    
-                    if (fileDate < cutoffTime) {
-                        localStorage.removeItem(key);
-                        console.log(`Slate Sweeper: Deleted old file ${dateString}`);
-                    }
-                }
-            }
-
-            // 2. Prune the Invisible Trash Bin (deleted_ids)
-            // Your IDs look like "t_1710000000000". We just extract those numbers!
-            const localDeleted = module.Storage.get('deleted_ids', []);
-            if (localDeleted.length > 0) {
-                const cleanedDeleted = localDeleted.filter(id => {
-                    const parts = id.split('_');
-                    if (parts.length > 1) {
-                        const timestamp = parseInt(parts[1], 10);
-                        return timestamp > cutoffTime; // Keep it ONLY if it's newer than 90 days
-                    }
-                    return false;
-                });
+        // 1. Sweep old Daily Task Files
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(prefix + 'tasks_')) {
+                const dateString = key.replace(prefix + 'tasks_', ''); // isolates "YYYY-MM-DD"
+                const fileDate = new Date(dateString).getTime();
                 
-                // If we removed old junk, save the newly cleaned trash bin
-                if (cleanedDeleted.length !== localDeleted.length) {
-                    module.Storage.set('deleted_ids', cleanedDeleted);
+                if (fileDate < cutoffTime) {
+                    localStorage.removeItem(key);
+                    console.log(`Slate Sweeper: Deleted old file ${dateString}`);
                 }
             }
-        });
+        }
+
+        // 2. Prune the Invisible Trash Bin (deleted_ids)
+        // Your IDs look like "t_1710000000000". We just extract those numbers!
+        const localDeleted = Storage.get('deleted_ids', []);
+        if (localDeleted.length > 0) {
+            const cleanedDeleted = localDeleted.filter(id => {
+                const parts = id.split('_');
+                if (parts.length > 1) {
+                    const timestamp = parseInt(parts[1], 10);
+                    return timestamp > cutoffTime; // Keep it ONLY if it's newer than 120 days
+                }
+                return false;
+            });
+            
+            // If we removed old junk, save the newly cleaned trash bin
+            if (cleanedDeleted.length !== localDeleted.length) {
+                Storage.set('deleted_ids', cleanedDeleted);
+            }
+        }
     }
-
-
 };  // END

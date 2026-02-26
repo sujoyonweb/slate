@@ -24,6 +24,8 @@ html, body {
     
     /* Removes the blue flash when you tap a button on mobile */
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; 
+    user-select: none;
 }
 
 /* Strip default button/input styling */

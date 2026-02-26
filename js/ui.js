@@ -72,7 +72,7 @@ export const UI = {
             viewTimeline.appendChild(container);
         }
 
-        const [y, m, d] = State.currentDateKey.split('-');
+        const [y, m, d] = State.currentDateKey.split('-').map(Number);
         const currentDayIndex = new Date(y, m - 1, d).getDay();
 
         let combinedBlocks = [...State.tasks];
@@ -131,16 +131,24 @@ export const UI = {
                 }
             });
 
+            // THE FIX: Accurate True-Status Checker for Suggested Focus
             let suggestedBlockId = null;
             const hasActiveTask = combinedBlocks.some(b => b.status === 'active');
             
             if (isToday && !hasActiveTask) {
                 const nowIndex = combinedBlocks.findIndex(b => b.isNowIndicator);
+                
+                const getTrueStatus = (b) => {
+                    if (b.isRoutineInstance) {
+                        return (State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(b.id)) ? 'completed' : 'pending';
+                    }
+                    return b.status || (b.completed ? 'completed' : 'pending');
+                };
+
                 if (nowIndex !== -1) {
                     for (let i = nowIndex - 1; i >= 0; i--) {
                         const b = combinedBlocks[i];
-                        const status = b.status || (b.completed ? 'completed' : 'pending');
-                        if (status !== 'completed' && timeWinners[b.time].id === b.id) {
+                        if (getTrueStatus(b) !== 'completed' && timeWinners[b.time].id === b.id) {
                             suggestedBlockId = b.id;
                             break;
                         }
@@ -148,8 +156,7 @@ export const UI = {
                     if (!suggestedBlockId) {
                         for (let i = nowIndex + 1; i < combinedBlocks.length; i++) {
                             const b = combinedBlocks[i];
-                            const status = b.status || (b.completed ? 'completed' : 'pending');
-                            if (status !== 'completed' && timeWinners[b.time].id === b.id) {
+                            if (getTrueStatus(b) !== 'completed' && timeWinners[b.time].id === b.id) {
                                 suggestedBlockId = b.id;
                                 break;
                             }
@@ -163,7 +170,6 @@ export const UI = {
             let delayIndex = 0;
 
             combinedBlocks.forEach(block => {
-                // NEW: Only apply the animation classes if animate === true
                 const animClass = animate ? 'cascade-in' : '';
                 const animStyle = animate ? `animation-delay: ${delayIndex * 0.04}s;` : '';
 
@@ -240,10 +246,9 @@ export const UI = {
                 `;
             });
 
-            htmlOutput += `</div>`; // Closes timeline-list-wrapper
+            htmlOutput += `</div>`; 
         }
 
-        // --- NEW: RENDER THE UNSCHEDULED INBOX (WITH LIMITS) ---
         const visibleInbox = State.inbox.slice(0, State.inboxVisibleLimit);
         const hiddenCount = State.inbox.length - State.inboxVisibleLimit;
 
@@ -300,8 +305,6 @@ export const UI = {
         }
 
         let htmlOutput = `<div class="timeline-container" style="padding-top: 80px;">`;
-        
-        // Add the vertical spine wrapper
         htmlOutput += `<div class="timeline-list-wrapper">`; 
 
         const dayMap = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -309,10 +312,8 @@ export const UI = {
         State.routines.forEach(routine => {
             const displayTime = this.formatDisplayTime(routine.time);
             
-            // Format the text to say "Everyday" or "Workdays" or "M W F"
             let daysString = 'Everyday';
             if (routine.days && routine.days.length !== 7) {
-                // If it's exactly Mon-Fri (length 5, no Sun 0, no Sat 6)
                 const isWorkdays = routine.days.length === 5 && !routine.days.includes(0) && !routine.days.includes(6);
                 if (isWorkdays) {
                     daysString = 'Workdays';
@@ -321,7 +322,6 @@ export const UI = {
                 }
             }
 
-            // NEW: Draw the subtasks on the master routine card
             let subtasksHTML = '';
             if (routine.subtasks && routine.subtasks.length > 0) {
                 const listItems = routine.subtasks.map(st => `
@@ -334,16 +334,12 @@ export const UI = {
 
             htmlOutput += `
                 <div class="timeline-node-block" data-id="${routine.id}">
-                    
                     <div class="timeline-toggle-node" style="cursor: default; opacity: 0.5;">○</div> 
-                    
                     <div class="block routine">
                         <div class="block-content">
                             <div class="block-time">${displayTime} &bull; ${daysString}</div>
                             <div class="block-title">${routine.title}</div>
-                            
                             ${subtasksHTML}
-                            
                         </div>
                         <button class="btn-task-menu" title="Menu" style="background:none; border:none; cursor:pointer; padding: 4px; display:flex; align-items:center; justify-content:center; opacity: 0.6; transition: opacity 0.2s;">
                             <svg width="16" height="4" viewBox="0 0 16 4" fill="var(--text-muted)">
@@ -357,7 +353,7 @@ export const UI = {
             `;
         });
 
-        htmlOutput += `</div></div>`; // Closes the wrapper and the container
+        htmlOutput += `</div></div>`; 
         viewRoutines.innerHTML = htmlOutput;
     },
 
@@ -370,7 +366,6 @@ export const UI = {
             return;
         }
 
-        // We reverse it so the newest items are at the top of the modal!
         listEl.innerHTML = [...State.inbox].reverse().map(item => `
             <div class="inbox-item" data-id="${item.id}" style="margin-bottom: 10px;">
                 <div class="inbox-item-content">
