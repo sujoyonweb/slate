@@ -1,0 +1,87 @@
+/* css/variables.css */
+
+/* --- 1. OFFLINE FONTS --- */
+/* Inter (Sans-Serif) */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/inter-v20-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../assets/fonts/inter-v20-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../assets/fonts/inter-v20-latin-600.woff2') format('woff2');
+}
+
+/* JetBrains Mono (Monospace) */
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-v24-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-v24-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-v24-latin-700.woff2') format('woff2');
+}
+
+/* --- 2. CSS VARIABLES --- */
+:root {
+    /* Backgrounds */
+    --bg-pure: #000000;         /* Pure OLED Black for borders/outside edges */
+    --bg-app: #000000;          /* Deep Graphite for the main app background */
+    --surface: #18181B;         /* Elevated Zinc for timeline cards */
+    --surface-hover: #27272A;   /* Slightly lighter for hover/active states */
+    --bg-modal: #131314;
+    --bg-input-surface: #1e1f20;
+    --border-input: rgba(255, 255, 255, 0.08);
+    
+    /* Brand Colors */
+    --accent-primary: #27AE60;  /* The signature Sage Green */
+    --accent-primary-dim: rgba(39, 174, 96, 0.12);
+    --accent-danger: #FF453A;   /* iOS Red for destructive actions */
+    
+    /* Text Colors */
+    --text-main: #F3F4F6;       /* Paper White (easy on the eyes) */
+    --text-muted: #A1A1AA;      /* Industrial Grey for subtitles */
+    --text-dim: #52525B;        /* Very dark grey for lines and inactive dots */
+    
+    /* Structure */
+    --border-muted: #27272A;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    
+    /* Fonts */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    
+    /* Layout Constants */
+    --app-max-width: 600px;     /* Keeps the app looking like a phone screen on desktop */
+}

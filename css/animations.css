@@ -1,0 +1,70 @@
+/* css/animations.css */
+
+/* --- Initial Page Load --- */
+.initial-load {
+    animation: fadeInRise 0.5s cubic-bezier(0.175, 0.885, 0.32, 1) forwards;
+}
+
+@keyframes fadeInRise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Pill Navigation Swiping (Apple-style curves) --- */
+.slide-out-left { animation: slideOutLeft 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1) forwards; }
+
+.slide-out-right { animation: slideOutRight 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.175, 0.885, 0.32, 1) forwards; }
+
+@keyframes slideOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-30px); }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(30px); }
+}
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* v2.2 */
+/* --- Block Deletion & Push Animations --- */
+.animate-delete-left {
+    animation: deleteSlideLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-push-right {
+    animation: pushSlideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* The element slides out, THEN smoothly collapses its height so items below glide up */
+@keyframes deleteSlideLeft {
+    0%   { opacity: 1; transform: translateX(0) scale(1); max-height: 200px; margin-bottom: 16px; padding: 16px 20px; }
+    40%  { opacity: 0; transform: translateX(-40px) scale(0.95); max-height: 200px; margin-bottom: 16px; padding: 16px 20px; }
+    100% { opacity: 0; transform: translateX(-40px) scale(0.95); max-height: 0; margin-bottom: 0; padding: 0; border: none; overflow: hidden; }
+}
+
+@keyframes pushSlideRight {
+    0%   { opacity: 1; transform: translateX(0) scale(1); max-height: 200px; margin-bottom: 16px; padding: 16px 20px; }
+    40%  { opacity: 0; transform: translateX(40px) scale(0.95); max-height: 200px; margin-bottom: 16px; padding: 16px 20px; }
+    100% { opacity: 0; transform: translateX(40px) scale(0.95); max-height: 0; margin-bottom: 0; padding: 0; border: none; overflow: hidden; }
+}
+
+
+/* --- Staggered Cascade for Timeline --- */
+.cascade-in {
+    animation: cascadeRise 0.4s cubic-bezier(0.175, 0.885, 0.32, 1) forwards;
+    opacity: 0; /* Starts invisible so it can fade in */
+}
+
+@keyframes cascadeRise {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}

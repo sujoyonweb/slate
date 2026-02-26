@@ -1,0 +1,1602 @@
+/* css/components.css */
+
+/* ==========================================
+ * 1. TOP PILL NAVIGATION
+ * ========================================== */
+.pill-container {
+    display: flex;
+    position: relative;
+    /* Apple Frosted Glass Effect */
+    background-color: rgba(24, 24, 27, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    padding: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.pill-btn {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 8px 24px;
+    border-radius: 26px;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.pill-btn.active {
+    color: var(--text-main);
+}
+
+.pill-indicator {
+    position: absolute;
+    bottom: 2px;
+    left: 24%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: var(--accent-primary);
+    border-radius: 50%;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+/* ==========================================
+ * 2. FLOATING ACTION BUTTON (FAB) & DOCK TEXT
+ * ========================================== */
+.fab {
+    /* Pops the button slightly up so it breaks out of the text line */
+    /* transform: translateY(-10px);  */
+
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+    color: var(--bg-pure);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px var(--accent-primary-dim);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.27), filter 0.2s ease;
+    flex-shrink: 0;
+}
+
+.fab svg {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s ease;
+}
+
+/* The Snappy Hardware Click (Maintains the upward pop) */
+.fab:active {
+    transform: translateY(-10px) scale(0.85);
+    filter: brightness(0.8);
+}
+
+/* The Left and Right Text Links */
+.dock-text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 10px 0;
+    /* Gives it a taller invisible tap target for thumbs */
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.dock-text:active {
+    color: var(--accent-primary);
+}
+
+/* ==========================================
+ * 4. THE DATE STRIP (7-Day Calendar)
+ * ========================================== */
+.date-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 80px 15px 20px 15px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, transparent 5%, var(--border-muted) 15%, 
+    var(--border-muted) 85%, transparent 95%) 1;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.date-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.date-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 14.2%;
+    color: var(--text-muted);
+    scroll-snap-align: center;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.date-item.is-today {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.date-item.active {
+    color: var(--text-main);
+}
+
+.date-indicator {
+    width: 4px;
+    height: 4px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.date-item.active .date-indicator {
+    background: var(--accent-primary);
+    box-shadow: 0 0 8px var(--accent-primary-dim);
+}
+
+/* ==========================================
+ * 5. THE TIMELINE CANVAS
+ * ========================================== */
+.timeline-container {
+    padding: 15px 15px 120px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    text-align: center;
+    gap: 15px;
+    opacity: 0.6;
+}
+
+.empty-state pre {
+    font-size: 10px;
+    line-height: 1.2;
+    color: var(--text-dim);
+    margin: 0;
+}
+
+.empty-state p {
+    font-size: 13px;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================
+ * 6. HARDWARE MODAL & INPUTS
+ * ========================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-modal);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-surface {
+    width: 100%;
+    max-width: var(--app-max-width);
+    background: var(--surface);
+    padding: 20px 20px 40px 20px;
+    border-radius: 24px 24px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-muted);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-overlay.active .modal-surface {
+    transform: translateY(0);
+}
+
+.modal-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border-muted);
+    border-radius: 2px;
+    margin: 0 auto 20px auto;
+}
+
+.modal-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.minimal-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#entryModalSurface {
+    background: var(--bg-modal);
+    border: 1px solid var(--border-input);
+}
+
+/* --- 1. Hardware Time Picker (The Space-Between Grid) --- */
+.time-section-split {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.time-inputs-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.time-block {
+    font-family: var(--font-mono);
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--text-main);
+    background: var(--bg-input-surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    width: 75px;
+    height: 70px;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.time-block::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.time-block:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+}
+
+.time-colon {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--text-muted);
+    margin-top: -4px;
+}
+
+/* The Right-Aligned AM/PM Toggle */
+.ampm-toggle-right {
+    display: flex;
+    flex-direction: row;
+    background: var(--bg-input-surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    padding: 4px;
+    height: 52px;
+    align-items: center;
+}
+
+.ampm-btn {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 0 16px;
+    height: 100%;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ampm-btn.active {
+    background: var(--surface-hover);
+    color: var(--text-main);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 17. RESPONSIVE DESIGN (PC / DESKTOP TWEAKS)*/
+/* Only applies to screens wider than a standard phone (480px) */
+@media (min-width: 480px) {
+
+    /* Widen the time blocks slightly for large screens */
+    .time-block {
+        width: 88px;
+    }
+
+    /* Widen the AM/PM button slightly to balance it */
+    .ampm-btn {
+        padding: 0 20px;
+    }
+}
+
+/* --- 2. Main Task Input (Unified Surface) --- */
+.task-input-surface {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main);
+    background: var(--bg-input-surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.task-input-surface:focus {
+    border-color: var(--accent-primary);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(39, 174, 96, 0.2);
+    outline: none;
+}
+
+.task-input-surface::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* --- 3. Semantic Sub-Tasks Input --- */
+.subtask-section {
+    margin-bottom: 24px;
+}
+
+.subtask-surface {
+    background: var(--bg-input-surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.subtask-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid var(--border-input);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* THIS PREVENTS THE SVG EXPLOSION! */
+.subtask-icon {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-dim);
+}
+
+.subtask-input-area {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-main);
+    background: transparent;
+    border: none;
+    padding: 16px 20px;
+    min-height: 100px;
+    resize: none;
+    transition: all 0.2s ease;
+    
+    /* Hides default scrollbar in Firefox and IE */
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+/* Hides default scrollbar in Chrome/Safari/Edge */
+.subtask-input-area::-webkit-scrollbar {
+    display: none;
+}
+
+.subtask-input-area:focus {
+    outline: none;
+    box-shadow: inset 2px 0 0 var(--accent-primary);
+}
+
+/* --- 4. Schedule Button --- */
+.action-btn {
+    background: var(--accent-primary);
+    color: var(--bg-pure);
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: auto;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.action-btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.8);
+}
+
+/* ==========================================
+ * 7. TIMELINE CARDS & SPINE
+ * ========================================== */
+.timeline-list-wrapper {
+    position: relative;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.timeline-list-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background-color: var(--border-muted);
+    z-index: 0;
+}
+
+.timeline-node-block {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    z-index: 1;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.timeline-toggle-node {
+    width: 22px;
+    height: 22px;
+    margin-top: 16px;
+    background-color: var(--bg-app);
+    border-radius: 50%;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 2;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.timeline-node-block.completed .timeline-toggle-node {
+    color: var(--accent-primary);
+}
+
+.block {
+    flex: 1;
+    margin: 0;
+    background-color: var(--surface);
+    border: 1px solid var(--border-muted);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2), 
+                opacity 0.4s ease, 
+                padding 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                background 0.4s ease, 
+                border-color 0.4s ease;
+}
+
+.block.task {
+    border-left: 4px solid var(--accent-primary);
+    background: linear-gradient(90deg, var(--accent-primary-dim) 0%, var(--surface) 40%);
+}
+
+.block.routine {
+    border-left: 4px solid var(--text-dim);
+}
+
+.block-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.block-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-primary);
+    letter-spacing: 1px;
+}
+
+.block.routine .block-time {
+    color: var(--text-muted);
+}
+
+.block-title {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main);
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================
+ * 8. THE 3-STATE FOCUS LOGIC
+ * ========================================== */
+.timeline-node-block.active .block.task {
+    /* 1. A tight, elegant "halo" (no massive blur, no invisible black) */
+    box-shadow: 0 8px 20px rgba(39, 174, 96, 0.15);
+    transform: scale(1.02);
+    z-index: 10;
+    
+    /* 2. Surface Elevation: Make the card physically lighter than pending tasks */
+    background: linear-gradient(90deg, rgba(39, 174, 96, 0.15) 0%, var(--surface-hover) 100%);
+    
+    /* 3. A crisp, visible outline that clearly frames it as the current focus */
+    border: 1px solid rgba(39, 174, 96, 0.5);
+    border-left: 4px solid var(--accent-primary);
+}
+
+/* Keep the title bright white */
+.timeline-node-block.active .block-title {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.timeline-node-block.active .timeline-toggle-node {
+    color: var(--accent-primary);
+    transform: scale(1.15);
+    text-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
+}
+
+/* Active Ends and Completed Starts */
+
+.timeline-node-block.completed .block {
+    opacity: 0.4;
+    border-color: transparent;
+    transform: scale(0.98);
+    background: transparent;
+}
+
+.timeline-node-block.completed .block-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.timeline-node-block.completed .timeline-toggle-node {
+    color: var(--text-dim);
+}
+
+/* --- CINEMATIC HEIGHT COLLAPSE FOR SUBTASKS --- */
+.subtasks {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    /* The Magic: We use max-height to smoothly animate the height to 0 */
+    max-height: 500px; 
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.3s ease, 
+                margin-top 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.timeline-node-block.completed .subtasks {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+/* Add a satisfying physical "bounce" to the card itself when it shrinks */
+.block {
+    flex: 1;
+    margin: 0;
+    background-color: var(--surface);
+    border: 1px solid var(--border-muted);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Upgraded transition with Apple's spring curve */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2), 
+                opacity 0.4s ease, 
+                padding 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                background 0.4s ease, 
+                border-color 0.4s ease;
+}
+
+/* --- NEW: Slim & Faint Collapsed Routines --- */
+.timeline-node-block.completed .block.routine {
+    background: rgba(255, 255, 255, 0.03); /* Your faint background! */
+    border-left: 4px solid var(--border-muted); /* Keeps the grey spine, just dim */
+    padding-top: 10px; /* Shrinks the height to a slim bar */
+    padding-bottom: 10px; 
+}
+
+/* --- Task Delete Button --- */
+.btn-delete-task {
+    color: var(--text-dim);
+    font-size: 24px;
+    font-weight: 300;
+    padding: 4px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete-task:hover,
+.btn-delete-task:active {
+    color: var(--accent-danger);
+    background: rgba(255, 69, 58, 0.15);
+}
+
+/* ==========================================
+ * 9. ROUTINE DAY SELECTOR (Apple-Style)
+ * ========================================== */
+.routine-days-section {
+    margin-bottom: 24px;
+}
+
+/* The inner padding for the days to match the subtask text area */
+.day-toggles-wrapper {
+    padding: 16px 20px;
+}
+
+/* Stripped of borders/backgrounds since the .subtask-surface wrapper handles it */
+.day-toggles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day-toggle.active {
+    background: var(--accent-primary);
+    color: var(--bg-pure);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.everyday-btn {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s ease;
+    background: transparent;
+    cursor: pointer;
+    padding: 4px 0;
+    /* Gives it a slightly larger tap area */
+}
+
+.everyday-btn.active {
+    color: var(--accent-primary);
+}
+
+/* ==========================================
+ * 10. TOAST & HARDWARE ANIMATIONS
+ * ========================================== */
+.toast-notification {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, -150%);
+    background: rgba(30, 30, 32, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--text-main);
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s ease;
+}
+
+.toast-notification.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+.shake {
+    animation: errorShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes errorShake {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    20%,
+    60% {
+        transform: translateY(0) translateX(-6px);
+    }
+
+    40%,
+    80% {
+        transform: translateY(0) translateX(6px);
+    }
+}
+
+/* ==========================================
+ * 11. THE YIELD OVERLAP ENGINE
+ * ========================================== */
+.timeline-node-block.yielded {
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.timeline-node-block.yielded .block {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: transparent;
+    border-color: var(--border-muted);
+    transition: all 0.3s ease;
+}
+
+.timeline-node-block.yielded .subtasks {
+    display: none;
+}
+
+.timeline-node-block.yielded.peek {
+    opacity: 1;
+}
+
+.timeline-node-block.yielded.peek .block {
+    background: var(--surface);
+}
+
+/* ==========================================
+ * 12. THE LIVE "NOW" INDICATOR
+ * ========================================== */
+.now-indicator-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin: 12px 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.now-indicator-dot {
+    position: absolute;
+    left: 21px;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: pulseGlow 2s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 4px var(--accent-primary), 0 0 0 0 rgba(39, 174, 96, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 0 12px var(--accent-primary), 0 0 0 6px rgba(39, 174, 96, 0.1);
+    }
+}
+
+.now-indicator-line {
+    height: 2px;
+    width: 100%;
+    margin-left: 21px;
+    background: linear-gradient(90deg, var(--accent-primary) 0%, transparent 80%);
+    opacity: 0.6;
+}
+
+.timeline-node-block.suggested-focus .timeline-toggle-node {
+    color: var(--accent-primary);
+    text-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
+    display: inline-block;
+    will-change: transform, opacity;
+    animation: smoothNodeBreathe 2.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes smoothNodeBreathe {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.18);
+        opacity: 1;
+    }
+}
+
+/* ==========================================
+ * 13. INTERACTIVE SUBTASKS
+ * ========================================== */
+.subtasks {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    /* NEW: The Cinematic Height Collapse */
+    max-height: 500px; 
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.3s ease, 
+                margin-top 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* When the task is checked, gracefully shrink to zero */
+.timeline-node-block.completed .subtasks {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    pointer-events: none;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-main);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.3s ease;
+}
+
+.subtask-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--border-muted);
+    border-radius: 4px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subtask-checkbox svg {
+    width: 9px;
+    height: 9px;
+    fill: none;
+    stroke: #000000;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- NEW: The Left-to-Right Strikethrough --- */
+.subtask-text {
+    position: relative;
+    display: inline-block;
+}
+
+.subtask-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0%;
+    height: 1.5px;
+    background-color: var(--text-muted);
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subtask-item.completed {
+    opacity: 0.5; /* Slightly brighter than 0.4 so you can see the line clearly */
+}
+
+/* Remove the harsh instant text-decoration */
+.subtask-item.completed .subtask-text {
+    text-decoration: none; 
+    color: var(--text-muted);
+}
+
+/* Trigger the left-to-right line draw */
+.subtask-item.completed .subtask-text::after {
+    width: 100%;
+}
+
+.subtask-item.completed .subtask-checkbox {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    transform: scale(0.95);
+}
+
+.subtask-item.completed .subtask-checkbox svg {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ==========================================
+ * 14. THE ACTION MENU (BOTTOM SHEET)
+ * ========================================== */
+.action-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 3000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.action-menu-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.action-menu-sheet {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: var(--app-max-width);
+    background: var(--surface);
+    border-top: 1px solid var(--border-muted);
+    border-radius: 20px 20px 0 0;
+    z-index: 3001;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-menu-sheet.show {
+    bottom: 0;
+}
+
+.action-menu-header {
+    width: 100%;
+    padding: 12px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.action-menu-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border-muted);
+    border-radius: 4px;
+}
+
+.action-menu-content {
+    padding: 0 20px 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.action-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 15px;
+    font-family: var(--font-sans);
+    text-align: left;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.action-menu-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-muted);
+}
+
+.action-menu-btn:active {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.action-menu-divider {
+    height: 1px;
+    background: var(--border-muted);
+    margin: 8px 0;
+}
+
+.action-menu-btn.danger {
+    color: #ff5e5e;
+}
+
+.action-menu-btn.danger svg {
+    stroke: #ff5e5e;
+}
+
+/* ==========================================
+ * 15. UNSCHEDULED INBOX
+ * ========================================== */
+.inbox-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-muted);
+    border-radius: 16px;
+}
+
+.inbox-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.inbox-icon {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-muted);
+}
+
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.inbox-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-pure);
+    border: 1px solid var(--border-muted);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.inbox-item:active {
+    border-color: var(--accent-primary);
+    transform: scale(0.98);
+}
+
+.inbox-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.inbox-title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.inbox-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+.btn-inbox-schedule {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    padding: 6px 14px;
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: 20px;
+    transition: background 0.2s ease;
+}
+
+.btn-inbox-schedule:active {
+    background: rgba(39, 174, 96, 0.2);
+}
+
+.inbox-input-wrapper {
+    position: relative;
+}
+
+.inbox-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-main);
+    background: var(--bg-pure);
+    border: 1px dashed var(--border-muted);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.inbox-input:focus {
+    border-style: solid;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);
+}
+
+.btn-inbox-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.btn-inbox-delete svg {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-inbox-delete:active {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--accent-danger, #ff453a);
+}
+
+.btn-view-archive {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-pure);
+    border: 1px dashed var(--border-muted);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.btn-view-archive:active {
+    background: var(--surface);
+    border-style: solid;
+}
+
+.archive-modal-content {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.archive-modal-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* ==========================================
+ * 16. SETTINGS & PREMIUM UI
+ * ========================================== */
+
+/* Fixed Modal Height */
+.settings-content {
+    height: 65vh;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.settings-content::-webkit-scrollbar {
+    display: none;
+}
+
+.settings-section {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 4px;
+}
+
+/* --- THE iOS GROUPED CARD LAYOUT --- */
+.settings-group {
+    background: var(--bg-input-surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    overflow: hidden;
+    /* Keeps child borders inside */
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-input);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.settings-row:last-child {
+    border-bottom: none;
+    /* Removes the line from the very bottom item */
+}
+
+.settings-row:active {
+    background: rgba(255, 255, 255, 0.03);
+    /* Subtle tap highlight */
+}
+
+.row-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.row-left svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-muted);
+}
+
+.settings-row.version-row {
+    cursor: default;
+}
+
+.settings-row.version-row:active {
+    background: transparent;
+}
+
+.version-text {
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+/* --- The Right Chevron --- */
+.chevron-right {
+    width: 16px;
+    height: 16px;
+    stroke: var(--text-dim);
+    transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+/* Adds a tiny right-nudge animation when you tap the row! */
+.settings-row:active .chevron-right {
+    transform: translateX(3px);
+    stroke: var(--text-muted);
+}
+
+/* --- THE SYNC DROPZONE --- */
+.sync-dropzone {
+    background: var(--bg-input-surface);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    /* More visible dashed border */
+    border-radius: 16px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sync-dropzone.drag-over {
+    border-color: var(--accent-primary);
+    background: rgba(39, 174, 96, 0.05);
+}
+
+.sync-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.sync-btn:active {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.sync-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--accent-primary);
+}
+
+.sync-divider {
+    height: 1px;
+    background: var(--border-input);
+    margin: 0 16px;
+}
+
+.sync-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 10px 0 6px 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    opacity: 0.8;
+}
+
+/* --- THE HARDWARE STEPPER --- */
+.stepper-control {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    /* Deep inset background */
+    border-radius: 20px;
+    padding: 2px;
+}
+
+.stepper-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.stepper-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+.stepper-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.stepper-value {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent-primary);
+    width: 32px;
+    text-align: center;
+    font-weight: 600;
+}
+/* --- iOS Style Toggle Switch --- */
+.toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border-input);
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s ease;
+    /* Keeps the row clickable but prevents the knob from absorbing the click */
+    pointer-events: none; 
+}
+.toggle-switch.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+.toggle-knob {
+    width: 20px;
+    height: 20px;
+    background: var(--text-main);
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.active .toggle-knob {
+    transform: translateX(20px); /* Slides the knob to the right! */
+}
+
+/* --- THE STEALTH RESET TEXT --- */
+.stealth-zone {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.stealth-danger-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-danger);
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    transition: opacity 0.2s ease;
+}
+
+.stealth-danger-btn:active {
+    opacity: 1;
+}
+
+/* ==========================================
+ * 17. CUSTOM ALERT MODAL (Factory Reset)
+ * ========================================== */
+#resetModal {
+    align-items: center;
+}
+
+.alert-modal-surface {
+    width: 85%;
+    max-width: 340px;
+    background: var(--surface);
+    border: 1px solid var(--border-muted);
+    border-radius: 24px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+}
+
+.modal-overlay.active .alert-modal-surface {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.alert-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255, 69, 58, 0.1);
+    color: var(--accent-danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.alert-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: currentColor;
+}
+
+.alert-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    font-family: var(--font-sans);
+}
+
+.alert-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    font-family: var(--font-sans);
+}
+
+.alert-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.alert-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.alert-btn.cancel {
+    background: var(--bg-app);
+    color: var(--text-main);
+    border: 1px solid var(--border-input);
+}
+
+.alert-btn.danger {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--accent-danger);
+}
+
+.alert-btn:active {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+}

@@ -1,0 +1,45 @@
+/* css/base.css */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    /* 100dvh is magic: it prevents mobile browser UI bars from covering your app */
+    height: 100dvh; 
+    
+    /* Disables the bouncy 'pull-to-refresh' effect on mobile */
+    overscroll-behavior-y: none; 
+    
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    
+    /* Makes text incredibly crisp on high-end screens */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* Removes the blue flash when you tap a button on mobile */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Strip default button/input styling */
+button, input, textarea {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+button {
+    cursor: pointer;
+    user-select: none; /* Prevents text selection when rapidly tapping */
+}
+
+ul, ol {
+    list-style: none;
+}

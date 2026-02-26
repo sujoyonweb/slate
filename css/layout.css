@@ -1,0 +1,86 @@
+/* css/layout.css */
+
+body {
+    display: flex;
+    justify-content: center;
+    overflow: hidden; /* Locks the master body so it never scrolls */
+}
+
+/* The Phone Frame (Locks to 600px on Desktop, 100% on Mobile) */
+.app-container {
+    width: 100%;
+    max-width: var(--app-max-width);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: var(--bg-pure); /* OLED Black */
+}
+
+/* Top Navigation Area (Floating & Animated) */
+.app-header {
+    position: absolute;
+    top: 20px; /* The default resting position */
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: transparent; 
+    z-index: 100;
+    pointer-events: none; 
+    
+    /* The magic Apple-style spring animation */
+    transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+}
+
+.app-header > * {
+    pointer-events: auto; 
+}
+
+/* The class we will add when you scroll down */
+.app-header.scrolled {
+    top: 8px; /* Glides up to the ceiling */
+}
+
+/* Dynamic Scrollable Views (Timeline & Routines) */
+/* Dynamic Scrollable Views (Timeline & Routines) */
+.view {
+    display: none; 
+    flex: 1; 
+    overflow-y: auto;
+    /* Reclaimed 40px of screen real estate! */
+    padding-bottom: 120px; 
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+.view::-webkit-scrollbar { 
+    display: none; 
+}
+
+.view.active { 
+    display: block; 
+}
+
+/* Bottom Dock (Replaces bottom-interface) */
+.bottom-dock {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90px; /* Taller to fit the FAB safely */
+    display: flex;
+    justify-content: space-between; /* Pushes text to the edges, FAB in the center */
+    align-items: flex-end; /* Aligns text to the bottom edge */
+    padding: 0 24px 20px 24px; /* Space from the sides and bottom */
+    z-index: 50; 
+    
+    /* A beautiful fade from pure black at the bottom to transparent above */
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 40%, var(--bg-pure) 90%);
+}
+
+
+/* Global Utility Classes */
+.hidden {
+    display: none !important;
+}
