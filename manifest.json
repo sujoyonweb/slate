@@ -1,7 +1,7 @@
 {
   "id": "/?source=pwa",
-  "name": "slate . minimalist planner",
-  "short_name": "slate .",
+  "name": "slate. minimalist planner",
+  "short_name": "slate.",
   "description": "Frictionless daily scheduling for minimalists.",
   "start_url": "./index.html",
   "display": "standalone",
@@ -35,4 +35,5 @@
       "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
     }
   ]
+
 }
