@@ -8,6 +8,7 @@ export const State = {
     routines: [],
     routineOverrides: {}, 
     routineCompletions: {},
+    routineActiveStates: {}, // NEW: Tracks deep-focus routines per day
     subtaskStates: {}, 
     inbox: [], // NEW: Inbox storage
     inboxLimit: 15,       // <-- EDIT THIS to change your max storage limit
@@ -52,6 +53,7 @@ export const State = {
         this.routines = Storage.get('master_routines', []);
         this.routineOverrides = Storage.get('routine_overrides', {});
         this.routineCompletions = Storage.get('routine_completions', {}); 
+        this.routineActiveStates = Storage.get('routine_active_states', {}); // Load active routines
         this.subtaskStates = Storage.get('subtask_states', {});
         this.inbox = Storage.get('unscheduled_inbox', []); // NEW: Load inbox
 
@@ -222,6 +224,12 @@ export const State = {
             });
             task.status = 'active';
             task.completed = false;
+            
+            // Cross-Cancel: Clear any active routines!
+            if (this.routineActiveStates[this.currentDateKey]) {
+                this.routineActiveStates[this.currentDateKey] = null;
+                Storage.set('routine_active_states', this.routineActiveStates);
+            }
         } else if (currentStatus === 'active') {
             task.status = 'completed';
             task.completed = true;
@@ -234,6 +242,34 @@ export const State = {
         Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
     },
 
+    // NEW: 3-State Deep Routine Logic
+    toggleRoutine(routineId, dateKey) {
+        if (!this.routineActiveStates[dateKey]) this.routineActiveStates[dateKey] = null;
+        if (!this.routineCompletions[dateKey]) this.routineCompletions[dateKey] = [];
+
+        const isCompleted = this.routineCompletions[dateKey].includes(routineId);
+        const isActive = this.routineActiveStates[dateKey] === routineId;
+        const currentStatus = isCompleted ? 'completed' : (isActive ? 'active' : 'pending');
+
+        if (currentStatus === 'pending') {
+            // Cross-Cancel: Clear any active tasks!
+            this.tasks.forEach(t => { if (t.status === 'active') { t.status = 'pending'; t.completed = false; } });
+            Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
+            
+            this.routineActiveStates[dateKey] = routineId;
+            Storage.set('routine_active_states', this.routineActiveStates);
+        } else if (currentStatus === 'active') {
+            this.routineActiveStates[dateKey] = null;
+            this.routineCompletions[dateKey].push(routineId);
+            Storage.set('routine_active_states', this.routineActiveStates);
+            Storage.set('routine_completions', this.routineCompletions);
+        } else if (currentStatus === 'completed') {
+            const index = this.routineCompletions[dateKey].indexOf(routineId);
+            if (index > -1) this.routineCompletions[dateKey].splice(index, 1);
+            Storage.set('routine_completions', this.routineCompletions);
+        }
+    },
+
     skipRoutineForDate(routineId, dateKey) {
         if (!this.routineOverrides[dateKey]) {
             this.routineOverrides[dateKey] = [];
@@ -244,24 +280,6 @@ export const State = {
             // SYNCHRONOUS SAVE
             Storage.set('routine_overrides', this.routineOverrides);
         }
-    },
-
-    toggleRoutineCompletion(routineId, dateKey) {
-        if (!this.routineCompletions[dateKey]) {
-            this.routineCompletions[dateKey] = [];
-        }
-        
-        const arr = this.routineCompletions[dateKey];
-        const index = arr.indexOf(routineId);
-        
-        if (index > -1) {
-            arr.splice(index, 1); // If already collapsed, un-collapse it
-        } else {
-            arr.push(routineId); // Collapse it for today
-        }
-        
-        // SYNCHRONOUS SAVE
-        Storage.set('routine_completions', this.routineCompletions);
     },
 
     // ==========================================
@@ -361,8 +379,8 @@ export const State = {
                 continue;
             }
             
-            // B. Handle Dictionaries (Subtasks & Routine Overrides)
-            if (key === 'routine_overrides' || key === 'subtask_states') {
+            // B. Handle Dictionaries (Subtasks & Routine Overrides & Active States)
+            if (key === 'routine_overrides' || key === 'subtask_states' || key === 'routine_active_states') {
                 const localObj = Storage.get(key, {});
                 const importedObj = importedData[key];
                 // Merges them. If there's a conflict, imported wins.
