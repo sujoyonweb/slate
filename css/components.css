@@ -568,7 +568,7 @@
 /* ==========================================
  * 8. THE 3-STATE FOCUS LOGIC
  * ========================================== */
-.timeline-node-block.active .block.task {
+.timeline-node-block.active .block {
     /* 1. A tight, elegant "halo" (no massive blur, no invisible black) */
     box-shadow: 0 8px 20px rgba(39, 174, 96, 0.15);
     transform: scale(1.02);

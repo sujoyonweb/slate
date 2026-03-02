@@ -114,6 +114,16 @@ export const UI = {
                 combinedBlocks.sort((a, b) => a.time.localeCompare(b.time));
             }
 
+            // Centralized Status Engine hoisted UP so the Overlap Engine can use it!
+            const getTrueStatus = (b) => {
+                if (b.isRoutineInstance) {
+                    const isC = State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(b.id);
+                    const isA = State.routineActiveStates[State.currentDateKey] === b.id;
+                    return isC ? 'completed' : (isA ? 'active' : 'pending');
+                }
+                return b.status || (b.completed ? 'completed' : 'pending');
+            };
+
             const timeWinners = {};
             combinedBlocks.forEach(block => {
                 if (block.isNowIndicator) return; 
@@ -121,8 +131,8 @@ export const UI = {
                 if (!currentWinner) {
                     timeWinners[block.time] = block;
                 } else {
-                    const blockIsActive = block.status === 'active';
-                    const winnerIsActive = currentWinner.status === 'active';
+                    const blockIsActive = getTrueStatus(block) === 'active';
+                    const winnerIsActive = getTrueStatus(currentWinner) === 'active';
                     if (blockIsActive) {
                         timeWinners[block.time] = block;
                     } else if (!winnerIsActive && block.id > currentWinner.id) {
@@ -131,20 +141,11 @@ export const UI = {
                 }
             });
 
-            // THE FIX: Accurate True-Status Checker for Suggested Focus
             let suggestedBlockId = null;
-            const hasActiveTask = combinedBlocks.some(b => b.status === 'active');
+            const hasActiveTask = combinedBlocks.some(b => getTrueStatus(b) === 'active');
             
             if (isToday && !hasActiveTask) {
                 const nowIndex = combinedBlocks.findIndex(b => b.isNowIndicator);
-                
-                const getTrueStatus = (b) => {
-                    if (b.isRoutineInstance) {
-                        return (State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(b.id)) ? 'completed' : 'pending';
-                    }
-                    return b.status || (b.completed ? 'completed' : 'pending');
-                };
-
                 if (nowIndex !== -1) {
                     for (let i = nowIndex - 1; i >= 0; i--) {
                         const b = combinedBlocks[i];
@@ -184,11 +185,7 @@ export const UI = {
                     return; 
                 }
                 
-                let status = block.status || (block.completed ? 'completed' : 'pending');
-                if (block.isRoutineInstance) {
-                    const isCompletedToday = State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(block.id);
-                    status = isCompletedToday ? 'completed' : 'pending';
-                }
+                let status = getTrueStatus(block); // Cleanest rendering logic possible!
                 
                 let icon = '○';
                 if (status === 'active') icon = '◎';

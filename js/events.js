@@ -724,7 +724,7 @@ export const Events = {
                 actionSheet.classList.remove('show');
                 if (navigator.vibrate) navigator.vibrate([15, 30]); 
 
-                // THE FIX: Safe, Synchronous Saving
+                // Safe, Synchronous Saving
                 setTimeout(() => {
                     const taskIndex = State.tasks.findIndex(t => t.id == activeMenuBlockId);
                     if (taskIndex === -1) return;
@@ -762,7 +762,7 @@ export const Events = {
                 if (taskIndex === -1) return;
                 const taskToMove = State.tasks.splice(taskIndex, 1)[0]; 
 
-                // THE FIX: Safe, Synchronous Saving
+                // Safe, Synchronous Saving
                 State.addInboxItem(taskToMove.title, taskToMove.subtasks);
                 Storage.set(`tasks_${State.currentDateKey}`, State.tasks);
 
@@ -859,7 +859,7 @@ export const Events = {
                 const wasCompleted = subtaskItem.classList.contains('completed');
                 if (!wasCompleted) AudioEngine.playTick();
                 
-                // THE FIX: Instantly trigger the line draw AND save the data before the animation delay
+                // Instantly trigger the line draw AND save the data before the animation delay
                 if (wasCompleted) subtaskItem.classList.remove('completed');
                 else subtaskItem.classList.add('completed');
 
@@ -893,7 +893,11 @@ export const Events = {
                             } else if (blockType === 'routine') {
                                 const isCompletedToday = State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(blockId);
                                 if (!isCompletedToday) {
-                                    State.toggleRoutineCompletion(blockId, State.currentDateKey);
+                                    // Bypass 'active' and hard-complete it when subtasks are done
+                                    State.routineActiveStates[State.currentDateKey] = null;
+                                    State.routineCompletions[State.currentDateKey].push(blockId);
+                                    Storage.set('routine_active_states', State.routineActiveStates);
+                                    Storage.set('routine_completions', State.routineCompletions);
                                 }
                             }
                             UI.renderTimeline();
@@ -908,10 +912,11 @@ export const Events = {
                                 Storage.set(`tasks_${State.currentDateKey}`, State.tasks);
                             }
                         } else if (blockType === 'routine') {
-                            // NEW: Un-complete the routine if a subtask is unchecked!
                             const isCompletedToday = State.routineCompletions[State.currentDateKey] && State.routineCompletions[State.currentDateKey].includes(blockId);
                             if (isCompletedToday && checkedCount < totalSubtasks) {
-                                State.toggleRoutineCompletion(blockId, State.currentDateKey);
+                                const index = State.routineCompletions[State.currentDateKey].indexOf(blockId);
+                                if (index > -1) State.routineCompletions[State.currentDateKey].splice(index, 1);
+                                Storage.set('routine_completions', State.routineCompletions);
                             }
                         }
                         UI.renderTimeline(); 
@@ -948,24 +953,20 @@ export const Events = {
                 
                 if (!isCompleted && typeof AudioEngine !== 'undefined') AudioEngine.playChime();
 
-                if (blockType === 'routine') {
-                    if (isCompleted) blockEl.classList.remove('completed');
-                    else blockEl.classList.add('completed');
-                } else {
-                    if (currentStatus === 'pending') {
-                        document.querySelectorAll('.timeline-node-block.active').forEach(el => el.classList.remove('active'));
-                        blockEl.classList.add('active');
-                    } else if (currentStatus === 'active') {
-                        blockEl.classList.remove('active');
-                        blockEl.classList.add('completed');
-                    } else if (currentStatus === 'completed') {
-                        blockEl.classList.remove('completed');
-                    }
+                // UNIFIED 3-STATE UI LOGIC FOR BOTH TASKS AND ROUTINES
+                if (currentStatus === 'pending') {
+                    document.querySelectorAll('.timeline-node-block.active').forEach(el => el.classList.remove('active'));
+                    blockEl.classList.add('active');
+                } else if (currentStatus === 'active') {
+                    blockEl.classList.remove('active');
+                    blockEl.classList.add('completed');
+                } else if (currentStatus === 'completed') {
+                    blockEl.classList.remove('completed');
                 }
 
                 setTimeout(() => {
                     if (blockType === 'routine') {
-                        State.toggleRoutineCompletion(blockId, State.currentDateKey);
+                        State.toggleRoutine(blockId, State.currentDateKey);
                     } else {
                         State.toggleTask(blockId);
                     }
