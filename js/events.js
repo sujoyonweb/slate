@@ -342,7 +342,16 @@ export const Events = {
                     UI.renderRoutines(); 
                 }
 
-                UI.renderTimeline();
+                // THE MAGIC ANIMATION TRIGGER
+                if (document.startViewTransition) {
+                    document.startViewTransition(() => {
+                        UI.renderTimeline();
+                        // If we are on the Routines page, re-render that too!
+                        if (document.getElementById('viewRoutines').classList.contains('active')) UI.renderRoutines();
+                    });
+                } else {
+                    UI.renderTimeline(); // Fallback for very old phones
+                }
 
                 if (navigator.vibrate) navigator.vibrate(15);
                 entryModal.classList.remove('active');
