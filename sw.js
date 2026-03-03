@@ -1,5 +1,5 @@
 // Bumped to v2.4 to trigger the update on user devices
-const CACHE_NAME = 'slate-core-v1.0.2';
+const CACHE_NAME = 'slate-core-v1.0.3';
 
 // The critical skeleton that must be cached on the very first install
 const APP_SHELL = [

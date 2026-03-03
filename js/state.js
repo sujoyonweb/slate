@@ -140,6 +140,8 @@ export const State = {
             task.title = title;
             task.subtasks = subtasks;
             
+            this.tasks.sort((a, b) => a.time.localeCompare(b.time));
+            
             // SYNCHRONOUS SAVE
             Storage.set(`tasks_${this.currentDateKey}`, this.tasks);
         }
@@ -152,6 +154,8 @@ export const State = {
             routine.title = title;
             routine.days = days;
             routine.subtasks = subtasksArray; // NEW: Updates subtasks!
+            
+            this.routines.sort((a, b) => a.time.localeCompare(b.time));
             
             // SYNCHRONOUS SAVE
             Storage.set('master_routines', this.routines);
