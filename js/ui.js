@@ -223,7 +223,7 @@ export const UI = {
                 if (animate) delayIndex++;
 
                 htmlOutput += `
-                    <div class="timeline-node-block ${status} ${yieldClass} ${suggestedClass} ${animClass}" style="${animStyle}" data-id="${block.id}" data-type="${blockType}">
+                    <div class="timeline-node-block ${status} ${yieldClass} ${suggestedClass} ${animClass}" style="view-transition-name: block_${block.id}; ${animStyle}" data-id="${block.id}" data-type="${blockType}">
                         <button class="timeline-toggle-node">${icon}</button>
                         <div class="block ${blockClass}">
                             <div class="block-content">
@@ -330,7 +330,7 @@ export const UI = {
             }
 
             htmlOutput += `
-                <div class="timeline-node-block" data-id="${routine.id}">
+                <div class="timeline-node-block" style="view-transition-name: block_${routine.id};" data-id="${routine.id}">
                     <div class="timeline-toggle-node" style="cursor: default; opacity: 0.5;">○</div> 
                     <div class="block routine">
                         <div class="block-content">
